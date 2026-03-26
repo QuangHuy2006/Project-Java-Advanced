@@ -1,4 +1,5 @@
 # Restaurant Management System - Project Structure
+```text
 RestaurantManagement/
 │
 ├── src/
