@@ -2,6 +2,7 @@ package com.restaurant.service.impl;
 
 import com.restaurant.model.MenuItem;
 import com.restaurant.model.Order;
+import com.restaurant.model.Order.Status;
 import com.restaurant.model.OrderDetail;
 import com.restaurant.model.User;
 import com.restaurant.service.CustomerServiceInterface;
@@ -13,6 +14,10 @@ import java.util.Scanner;
 public class CustomerService implements CustomerServiceInterface {
     static int currentOrderId = 0;
     static int currentTableId = 0;
+    static {
+        currentOrderId = 0;
+        currentTableId = 0;
+    }
 
     static final MenuService menuService = new MenuService();
     static final OrderService orderService = new OrderService();
@@ -66,7 +71,7 @@ public class CustomerService implements CustomerServiceInterface {
 
     @Override
     public void createNewOrder(Scanner sc, User user) throws SQLException {
-        if (currentOrderId != 0) {
+        if (getCurrentOrderId(user) != 0) {
             System.out.println("\nBan dang co don hang chua thanh toan! Vui long thanh toan truoc.");
             System.out.print("\nNhan Enter de tiep tuc...");
             sc.nextLine();
@@ -74,7 +79,6 @@ public class CustomerService implements CustomerServiceInterface {
         }
 
         System.out.println("\n===== TAO DON HANG MOI =====");
-
         System.out.println("Danh sach ban trong:");
         var availableTables = tableService.getAvailableTables();
         if (availableTables.isEmpty()) {
@@ -90,16 +94,15 @@ public class CustomerService implements CustomerServiceInterface {
         }
 
         System.out.print("\nNhap so ban: ");
+
         try {
-            int tableNumber = Integer.parseInt(sc.nextLine());
-            var table = tableService.getExistTable(tableNumber);
-            currentTableId = table.getId();
+            currentTableId = Integer.parseInt(sc.nextLine());
 
             Order order = new Order();
             order.setUserId(user.getId());
             order.setTableId(currentTableId);
             order.setTotalAmount(0);
-            order.setStatus(Order.Status.PENDING);
+            order.setStatus(Status.PENDING);
 
             boolean result = orderService.createOrder(order);
             if (result) {
@@ -116,6 +119,14 @@ public class CustomerService implements CustomerServiceInterface {
 
         System.out.print("\nNhan Enter de tiep tuc...");
         sc.nextLine();
+    }
+
+    private int getCurrentOrderId(User user) throws SQLException {
+        List<Order> pendingOrders = orderService.getOrdersByStatus(Status.PENDING, user);
+        if (pendingOrders.isEmpty()) {
+            return 0;
+        }
+        return pendingOrders.get(0).getId();
     }
 
     @Override
@@ -166,9 +177,10 @@ public class CustomerService implements CustomerServiceInterface {
             OrderDetail detail = new OrderDetail();
             detail.setOrderId(currentOrderId);
             detail.setMenuItemId(dishId);
+            detail.setMenuItemName(menuService.getExistDishes(dishId).getName());
             detail.setQuantity(quantity);
             detail.setPrice(dish.getPrice().doubleValue());
-            detail.setStatus(Order.Status.PENDING);
+            detail.setStatus(Status.PENDING);
 
             boolean result = orderService.addOrderDetail(detail);
             if (result) {
@@ -188,13 +200,14 @@ public class CustomerService implements CustomerServiceInterface {
     }
 
     @Override
-    public void viewCurrentOrder() throws SQLException {
-        if (currentOrderId == 0) {
+    public void viewCurrentOrder(User user) throws SQLException {
+        if (getCurrentOrderId(user) == 0) {
             System.out.println("\nBan chua co don hang nao!");
             System.out.print("\nNhan Enter de tiep tuc...");
             new Scanner(System.in).nextLine();
-            return;
+
         }
+        currentOrderId = getCurrentOrderId(user);
 
         System.out.println("\n===== DON HANG HIEN TAI =====");
         List<OrderDetail> details = orderService.getOrderDetails(currentOrderId);
@@ -357,7 +370,8 @@ public class CustomerService implements CustomerServiceInterface {
         String confirm = sc.nextLine();
 
         if (confirm.equalsIgnoreCase("y")) {
-            boolean result = orderService.updateOrderStatus(currentOrderId, Order.Status.PAID);
+            boolean result = orderService.updateOrderStatus(currentOrderId, Status.PAID);
+            orderService.updateOrderDetailStatus(currentOrderId, Status.PAID);
             if (result) {
                 System.out.println("Thanh toan thanh cong! Cam on quy khach!");
                 currentOrderId = 0;

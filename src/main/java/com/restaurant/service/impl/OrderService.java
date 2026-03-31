@@ -7,6 +7,7 @@ import com.restaurant.dao.impl.OrderDetailImpl;
 import com.restaurant.model.Order;
 import com.restaurant.model.OrderDetail;
 import com.restaurant.model.Order.Status;
+import com.restaurant.model.User;
 import com.restaurant.service.OrderServiceInterface;
 
 import java.sql.SQLException;
@@ -38,8 +39,8 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
-    public List<Order> getOrdersByStatus(Status status) throws SQLException {
-        return orderDAO.getOrdersByStatus(status);
+    public List<Order> getOrdersByStatus(Status status, User user) throws SQLException {
+        return orderDAO.getOrdersByStatus(status, user);
     }
 
     @Override
@@ -71,6 +72,19 @@ public class OrderService implements OrderServiceInterface {
             return false;
         }
         return orderDAO.updateOrderStatus(orderId, status);
+    }
+
+    @Override
+    public boolean updateOrderDetailStatus(int orderId, Status status) throws SQLException {
+        if (orderId <= 0) {
+            System.out.println("ID đơn hàng không hợp lệ!");
+            return false;
+        }
+        if (status == null) {
+            System.out.println("Trạng thái không hợp lệ!");
+            return false;
+        }
+        return orderDAO.updateOrderDetailStatus(orderId, status);
     }
 
     @Override

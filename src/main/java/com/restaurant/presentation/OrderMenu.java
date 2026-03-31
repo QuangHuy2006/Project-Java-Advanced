@@ -1,9 +1,12 @@
 package com.restaurant.presentation;
 
+import com.restaurant.model.OrderDetail;
 import com.restaurant.service.impl.OrderService;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 import com.restaurant.model.Order.Status;
+import com.restaurant.model.Order;
 
 public class OrderMenu {
     static int choice = 0;
@@ -20,17 +23,21 @@ public class OrderMenu {
             System.out.println("4. View Order Details");
             System.out.println("5. View Order By Id");
             System.out.println("6. View Order Details By Status");
-            System.out.println("5. Exit");
+            System.out.println("7. Exit");
             System.out.print("\nNhap lua chon: ");
 
             choice = Integer.parseInt(sc.nextLine());
 
             switch (choice) {
                 case 1:
-                    System.out.println(orderService.getAllOrders().toString());
+                    List<Order> list = orderService.getAllOrders();
+                    for(Order or : list){
+                        System.out.println(or.toString());
+                    }
                     break;
                 case 2:
                     int miniChoice = 0;
+                    List<Order> orderByStatus;
                     System.out.println("1. Pending");
                     System.out.println("2. Cooking");
                     System.out.println("3. Completed");
@@ -39,19 +46,34 @@ public class OrderMenu {
                     miniChoice = Integer.parseInt(sc.nextLine());
                     switch(miniChoice){
                         case 1:
-                            System.out.println(orderService.getOrdersByStatus(Status.PENDING).toString());
+                            orderByStatus = orderService.getOrdersByStatus(Status.PENDING, null);
+                            for(Order or : orderByStatus){
+                                System.out.println(or.toString());
+                            }
                             break;
                         case 2:
-                            System.out.println(orderService.getOrdersByStatus(Status.COOKING).toString());
+                            orderByStatus = orderService.getOrdersByStatus(Status.COOKING, null);
+                            for(Order or : orderByStatus){
+                                System.out.println(or.toString());
+                            }
                             break;
                         case 3:
-                            System.out.println(orderService.getOrdersByStatus(Status.COMPLETED).toString());
+                            orderByStatus = orderService.getOrdersByStatus(Status.COMPLETED, null);
+                            for(Order or : orderByStatus){
+                                System.out.println(or.toString());
+                            }
                             break;
                         case 4:
-                            System.out.println(orderService.getOrdersByStatus(Status.PAID).toString());
+                            orderByStatus = orderService.getOrdersByStatus(Status.PAID, null);
+                            for(Order or : orderByStatus){
+                                System.out.println(or.toString());
+                            }
                             break;
                         case 5:
-                            System.out.println(orderService.getOrdersByStatus(Status.CANCELLED).toString());
+                            orderByStatus = orderService.getOrdersByStatus(Status.CANCELLED, null);
+                            for(Order or : orderByStatus){
+                                System.out.println(or.toString());
+                            }
                             break;
                     }
                     break;
@@ -109,11 +131,14 @@ public class OrderMenu {
                         case 5 -> Status.CANCELLED;
                         default -> null;
                     };
-                    System.out.println(orderService.getOrderDetailsByStatus(findStatus).toString());
+                    List<OrderDetail> l = orderService.getOrderDetailsByStatus(findStatus);
+                    for(OrderDetail item : l){
+                        System.out.println(item.toString());
+                    }
                     break;
                 default:
                     System.out.println("Lua chon khong hop le!");
             }
-        } while (choice != 5);
+        } while (choice != 7);
     }
 }

@@ -56,14 +56,13 @@ public class UserImpl implements UserDAO {
 
     @Override
     public boolean register(User user) {
-        String sql = "INSERT INTO users (username, password, role, status) VALUES (?, ?, ?, 'ACTIVE')";
+        String sql = "INSERT INTO users (username, password, role, status) VALUES (?, ?, 'CUSTOMER', 'ACTIVE')";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, user.getUsername());
             stmt.setString(2, PasswordHasher.hash(user.getPassword()));
-            stmt.setString(3, user.getRole() != null ? user.getRole() : "CUSTOMER");
 
             stmt.executeUpdate();
             return true;

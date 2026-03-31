@@ -2,9 +2,13 @@ package com.restaurant.presentation;
 
 import java.sql.SQLException;
 
+import com.restaurant.model.MenuItem;
 import com.restaurant.model.Order;
 import com.restaurant.model.Order.Status;
+import com.restaurant.model.OrderDetail;
 import com.restaurant.service.impl.ChefService;
+
+import java.util.List;
 import java.util.Scanner;
 import com.restaurant.service.impl.MenuService;
 
@@ -28,7 +32,10 @@ public class ChefMenu {
 
             switch (choice) {
                 case 1:
-                    chefService.getPendingOrders();
+                    List<OrderDetail> list = chefService.getPendingOrders();
+                    for(OrderDetail order : list){
+                        System.out.println(order.toString());
+                    }
                     break;
                 case 2:
                     System.out.print("Nhap id muon tim kiem: ");
@@ -60,6 +67,7 @@ public class ChefMenu {
                     }
                     break;
                 case 3:
+                    List<OrderDetail> found;
                     System.out.print("Nhap trang thai muon tim kiem: ");
                     int miniChoice = 0;
                     System.out.println("STATUS");
@@ -71,24 +79,42 @@ public class ChefMenu {
                     miniChoice = Integer.parseInt(sc.nextLine());
                     switch(miniChoice){
                         case 1:
-                            chefService.getOrdersByStatus(Status.PENDING);
+                            found = chefService.getOrdersByStatus(Status.PENDING);
+                            for(OrderDetail orders : found){
+                                System.out.println(orders.toString());
+                            }
                             break;
                         case 2:
-                            chefService.getOrdersByStatus(Status.COOKING);
+                            found = chefService.getOrdersByStatus(Status.COOKING);
+                            for(OrderDetail orders : found){
+                                System.out.println(orders.toString());
+                            }
                             break;
                         case 3:
-                            chefService.getOrdersByStatus(Status.COMPLETED);
+                            found = chefService.getOrdersByStatus(Status.COMPLETED);
+                            for(OrderDetail orders : found){
+                                System.out.println(orders.toString());
+                            }
                             break;
                         case 4:
-                            chefService.getOrdersByStatus(Status.PAID);
+                            found = chefService.getOrdersByStatus(Status.PAID);
+                            for(OrderDetail orders : found){
+                                System.out.println(orders.toString());
+                            }
                             break;
                         case 5:
-                            chefService.getOrdersByStatus(Status.CANCELLED);
+                            found = chefService.getOrdersByStatus(Status.CANCELLED);
+                            for(OrderDetail orders : found){
+                                System.out.println(orders.toString());
+                            }
                             break;
                     }
                     break;
                 case 4:
-                    menuService.getAllDishes();
+                    List<MenuItem> Menu = menuService.getAllDishes();
+                    for(MenuItem item : Menu){
+                        System.out.println(item.toString());
+                    }
                     break;
                 case 5:
                     System.out.println("Thoat Chef System...");

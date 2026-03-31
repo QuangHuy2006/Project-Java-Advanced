@@ -47,7 +47,7 @@ public class CustomerMenu {
                     ser.addDishesToOrder(sc, user);
                     break;
                 case 5:
-                    ser.viewCurrentOrder();
+                    ser.viewCurrentOrder(user);
                     break;
                 case 6:
                     ser.updateOrderItemQuantity(sc, user);

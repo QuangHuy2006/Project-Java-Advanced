@@ -3,6 +3,7 @@ package com.restaurant.dao.impl;
 import com.restaurant.dao.OrderDAO;
 import com.restaurant.model.Order;
 import com.restaurant.model.Order.Status;
+import com.restaurant.model.User;
 import com.restaurant.utils.DatabaseConnection;
 
 import java.sql.*;
@@ -88,34 +89,21 @@ public class OrderImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> getOrdersByTableId(int tableId) throws SQLException {
-        List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders WHERE table_id = ? ORDER BY created_at DESC";
+    public boolean updateOrderStatus(int orderId, Status status) throws SQLException {
+        String sql = "UPDATE orders SET status = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, tableId);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Order order = new Order();
-                order.setId(rs.getInt("id"));
-                order.setTableId(rs.getInt("table_id"));
-                order.setUserId(rs.getInt("user_id"));
-                order.setTotalAmount(rs.getDouble("total_amount"));
-                order.setStatus(Status.valueOf(rs.getString("status").trim().toUpperCase()));
-                order.setCreatedAt(rs.getTimestamp("created_at"));
-                order.setUpdatedAt(rs.getTimestamp("updated_at"));
-                orders.add(order);
-            }
+            stmt.setString(1, status.name());
+            stmt.setInt(2, orderId);
+            return stmt.executeUpdate() > 0;
         }
-        return orders;
     }
 
     @Override
-    public boolean updateOrderStatus(int orderId, Status status) throws SQLException {
-        String sql = "UPDATE orders SET status = ? WHERE id = ?";
+    public boolean updateOrderDetailStatus(int orderId, Status status) throws SQLException {
+        String sql = "UPDATE order_details SET status = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -164,28 +152,53 @@ public class OrderImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> getOrdersByStatus(Status status) throws SQLException {
+    public List<Order> getOrdersByStatus(Status status, User user) throws SQLException {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders WHERE status = ?";
+        if(user == null) {
+            String sql = "SELECT * FROM orders WHERE status = ? ORDER BY id desc";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, status.name());
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, status.name());
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Order order = new Order();
-                    order.setId(rs.getInt("id"));
-                    order.setTableId(rs.getInt("table_id"));
-                    order.setUserId(rs.getInt("user_id"));
-                    order.setTotalAmount(rs.getDouble("total_amount"));
-                    order.setStatus(Status.valueOf(rs.getString("status").trim().toUpperCase()));
-                    order.setCreatedAt(rs.getTimestamp("created_at"));
-                    order.setUpdatedAt(rs.getTimestamp("updated_at"));
-                    orders.add(order);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        Order order = new Order();
+                        order.setId(rs.getInt("id"));
+                        order.setTableId(rs.getInt("table_id"));
+                        order.setUserId(rs.getInt("user_id"));
+                        order.setTotalAmount(rs.getDouble("total_amount"));
+                        order.setStatus(Status.valueOf(rs.getString("status").trim().toUpperCase()));
+                        order.setCreatedAt(rs.getTimestamp("created_at"));
+                        order.setUpdatedAt(rs.getTimestamp("updated_at"));
+                        orders.add(order);
+                    }
                 }
             }
+            return orders;
+        }else{
+            String sql = "SELECT * FROM orders WHERE status = ? AND user_id = ? ORDER BY id desc";
+
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, status.name());
+                stmt.setInt(2,user.getId());
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        Order order = new Order();
+                        order.setId(rs.getInt("id"));
+                        order.setTableId(rs.getInt("table_id"));
+                        order.setUserId(rs.getInt("user_id"));
+                        order.setTotalAmount(rs.getDouble("total_amount"));
+                        order.setStatus(Status.valueOf(rs.getString("status").trim().toUpperCase()));
+                        order.setCreatedAt(rs.getTimestamp("created_at"));
+                        order.setUpdatedAt(rs.getTimestamp("updated_at"));
+                        orders.add(order);
+                    }
+                }
+            }
+            return orders;
         }
-        return orders;
     }
 }

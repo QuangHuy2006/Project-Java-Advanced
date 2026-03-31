@@ -27,19 +27,4 @@ public class ChefService implements ChefServiceInterface {
     public boolean updateOrderStatus(int orderDetailId, Status status) throws SQLException {
         return orderDetailDAO.updateOrderDetailStatus(orderDetailId, status);
     }
-
-    private boolean isValidStatusTransition(String currentStatus, String newStatus) {
-        switch (currentStatus) {
-            case "PENDING":
-                return newStatus.equals("COOKING") || newStatus.equals("CANCELLED");
-            case "COOKING":
-                return newStatus.equals("READY");
-            case "READY":
-                return newStatus.equals("SERVED");
-            case "SERVED":
-                return false; // Không thể thay đổi sau khi đã phục vụ
-            default:
-                return false;
-        }
-    }
 }

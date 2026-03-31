@@ -14,7 +14,7 @@ public interface CustomerServiceInterface {
 
     void addDishesToOrder(Scanner sc, User user) throws SQLException;
 
-    void viewCurrentOrder() throws SQLException;
+    void viewCurrentOrder(User user) throws SQLException;
 
     void updateOrderItemQuantity(Scanner sc, User user) throws SQLException;
 

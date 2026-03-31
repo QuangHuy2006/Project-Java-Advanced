@@ -13,27 +13,20 @@ public class OrderDetailImpl implements OrderDetailDAO {
 
     @Override
     public boolean addOrderDetail(OrderDetail detail) throws SQLException {
-        String sql = "INSERT INTO order_details (order_id, menu_item_id, quantity, price, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO order_details (order_id, menu_item_id,menu_item_name, quantity, price, status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, detail.getOrderId());
             stmt.setInt(2, detail.getMenuItemId());
-            stmt.setInt(3, detail.getQuantity());
-            stmt.setDouble(4, detail.getPrice());
-            stmt.setString(5, detail.getStatus().name());
+            stmt.setString(3, detail.getMenuItemName());
+            stmt.setInt(4, detail.getQuantity());
+            stmt.setDouble(5, detail.getPrice());
+            stmt.setString(6, detail.getStatus().name());
 
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    detail.setId(rs.getInt(1));
-                }
-                return true;
-            }
-            return false;
+            stmt.executeUpdate();
+            return true;
         }
     }
 

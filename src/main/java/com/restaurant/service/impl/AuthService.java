@@ -29,22 +29,6 @@ public class AuthService implements AuthServiceInterface{
 
     @Override
     public boolean register(User user) throws SQLException {
-        // Kiểm tra đầu vào
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            System.out.println("    Tên đăng nhập không được để trống!");
-            return false;
-        }
-
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            System.out.println("    Mật khẩu không được để trống!");
-            return false;
-        }
-
-        if (user.getPassword().length() < 6) {
-            System.out.println("    Mật khẩu phải có ít nhất 6 ký tự!");
-            return false;
-        }
-
         if (userDAO.isUsernameExists(user.getUsername())) {
             System.out.println("    Tên đăng nhập đã tồn tại! Vui lòng chọn tên khác.");
             return false;
