@@ -17,7 +17,12 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    printMenuByRole(login().getRole());
+                    try{
+                        User user = login();
+                        printMenuByRole(user.getRole(), user);
+                    }catch(Exception e){
+                        e.getMessage();
+                    }
                     break;
                 case 2:
                     register();
@@ -42,7 +47,7 @@ public class Main {
         System.out.print("\nNhap lua chon: ");
     }
 
-    private static void printMenuByRole(String role) throws SQLException {
+    private static void printMenuByRole(String role, User user) throws SQLException {
         switch (role){
             case "ADMIN":
                 AdminMenu.printMenu(scanner);
@@ -50,11 +55,11 @@ public class Main {
             case "CHEF":
                 ChefMenu.printMenu(scanner);
                 break;
-            case "MANGER":
+            case "MANAGER":
                 ManagerMenu.printMenu(scanner);
                 break;
             case "CUSTOMER":
-                CustomerMenu.printMenu(scanner);
+                CustomerMenu.printMenu(scanner, user);
                 break;
         }
     }
@@ -77,33 +82,30 @@ public class Main {
     }
 
     private static User login() throws SQLException {
-        System.out.println("\n==================== DANG NHAP ====================");
-        System.out.print("Ten dang nhap: ");
-        String username = scanner.nextLine();
+            System.out.println("\n==================== DANG NHAP ====================");
+            System.out.print("Ten dang nhap: ");
+            String username = scanner.nextLine();
 
-        System.out.print("Mat khau: ");
-        String password = scanner.nextLine();
+            System.out.print("Mat khau: ");
+            String password = scanner.nextLine();
 
-        User user = authService.login(username, password);
-
-        if (user == null) {
-            System.out.println("\nSai ten dang nhap hoac mat khau!");
-            System.out.print("\nNhan Enter de tiep tuc...");
-            scanner.nextLine();
-
-        }
-
-        if (!user.getStatus().equals("ACTIVE")) {
-            System.out.println("\nTai khoan da bi khoa! Vui long lien he quan ly.");
-            System.out.print("\nNhan Enter de tiep tuc...");
-            scanner.nextLine();
-
-        }
-
-        System.out.println("\nDang nhap thanh cong! Chao mung " + user.getFullName() + "!");
-        System.out.print("\nNhan Enter de tiep tuc...");
-        scanner.nextLine();
-        return user;
+            User user = authService.login(username, password);
+            if (user == null) {
+                System.out.println("\nSai ten dang nhap hoac mat khau!");
+                System.out.print("\nNhan Enter de tiep tuc...");
+                scanner.nextLine();
+            }else {
+                if (!user.getStatus().equals("ACTIVE")) {
+                    System.out.println("\nTai khoan da bi khoa! Vui long lien he quan ly.");
+                    System.out.print("\nNhan Enter de tiep tuc...");
+                    scanner.nextLine();
+                }
+                System.out.println("\nDang nhap thanh cong! Chao mung " + user.getUsername() + "!");
+                System.out.print("\nNhan Enter de tiep tuc...");
+                scanner.nextLine();
+                return user;
+            }
+        return null;
     }
 
     private static void register() throws SQLException {
@@ -128,21 +130,9 @@ public class Main {
             return;
         }
 
-        System.out.print("Ho va ten: ");
-        String fullName = scanner.nextLine();
-
-        System.out.print("So dien thoai: ");
-        String phone = scanner.nextLine();
-
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
-
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
-        newUser.setFullName(fullName);
-        newUser.setPhone(phone);
-        newUser.setEmail(email);
         newUser.setRole("CUSTOMER");
         newUser.setStatus("ACTIVE");
 

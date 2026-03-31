@@ -40,11 +40,6 @@ public class AuthService implements AuthServiceInterface{
             return false;
         }
 
-        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
-            System.out.println("    Họ và tên không được để trống!");
-            return false;
-        }
-
         if (user.getPassword().length() < 6) {
             System.out.println("    Mật khẩu phải có ít nhất 6 ký tự!");
             return false;

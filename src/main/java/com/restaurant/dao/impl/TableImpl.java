@@ -114,4 +114,25 @@ public class TableImpl implements TableDAO {
         }
         return list;
     }
+    @Override
+    public List<Table> getAvailableTables() throws SQLException {
+        List<Table> list = new ArrayList<>();
+        String sql = "SELECT * FROM restaurant_tables WHERE status = 'AVAILABLE'";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Table t = new Table(
+                        rs.getInt("id"),
+                        rs.getInt("table_number"),
+                        rs.getInt("capacity"),
+                        Status.valueOf(rs.getString("status").trim().toUpperCase())
+                );
+                list.add(t);
+            }
+        }
+        return list;
+    }
 }

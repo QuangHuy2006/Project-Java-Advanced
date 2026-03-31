@@ -4,25 +4,26 @@ import com.restaurant.dao.TableDAO;
 import com.restaurant.dao.impl.TableImpl;
 import com.restaurant.model.Table;
 import com.restaurant.model.Table.Status;
+import com.restaurant.service.TableServiceInterface;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class TableService {
+public class TableService implements TableServiceInterface {
 
     private final TableDAO tableDAO = new TableImpl();
 
-    // ================= ADD TABLE =================
+    @Override
     public void addTable(int tableNumber, int capacity) throws SQLException {
         tableDAO.addTable(tableNumber, capacity);
     }
 
-    // ================= CHECK TABLE EXISTS =================
+    @Override
     public void checkTableNumberExists(int tableNumber) throws SQLException {
         tableDAO.checkTableNumberExists(tableNumber);
     }
 
-    // ================= GET EXIST TABLE =================
+    @Override
     public Table getExistTable(int tableNumber) throws SQLException {
         Table table = tableDAO.getExistTable(tableNumber);
 
@@ -33,13 +34,12 @@ public class TableService {
         return table;
     }
 
-    // ================= UPDATE TABLE =================
-    // Chỉ có 3 tham số: id (tableNumber), capacity, status
+    @Override
     public void updateTable(int id, Integer capacity, Status status) throws SQLException {
         tableDAO.updateTable(id, capacity, status);
     }
 
-    // ================= DELETE TABLE =================
+    @Override
     public void deleteTable(int tableNumber) throws SQLException {
         if (tableNumber <= 0) {
             System.out.println("Số bàn không hợp lệ!");
@@ -49,8 +49,13 @@ public class TableService {
         tableDAO.deleteTable(tableNumber);
     }
 
-    // ================= GET ALL TABLES =================
+    @Override
     public List<Table> getAllTables() throws SQLException {
         return tableDAO.getAllTables();
+    }
+
+    @Override
+    public List<Table> getAvailableTables() throws SQLException{
+        return tableDAO.getAvailableTables();
     }
 }

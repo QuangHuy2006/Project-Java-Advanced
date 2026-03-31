@@ -18,4 +18,6 @@ public interface TableDAO {
     void deleteTable(int id) throws SQLException;
 
     List<Table> getAllTables() throws SQLException;
+
+    List<Table> getAvailableTables() throws SQLException;
 }

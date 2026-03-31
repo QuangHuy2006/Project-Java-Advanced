@@ -93,8 +93,8 @@ public class TableMenu {
                             System.out.println(e.getMessage());
                         }
                     }
-                    
-                    int newCapacity = 0;   
+
+                    int newCapacity = 1;
                     while (true) {
                         try {
                             System.out.print("Input new capacity (Enter để giữ nguyên): ");
@@ -104,17 +104,19 @@ public class TableMenu {
                                 break;  // giữ nguyên capacity cũ
                             }
 
-                            newCapacity = Integer.parseInt(input);
+                            int tempCapacity = Integer.parseInt(input);
 
-                            if (newCapacity <= 0) {
+                            if (tempCapacity <= 0) {
                                 System.out.println("Phải > 0");
                                 continue;
                             }
+                            newCapacity = tempCapacity;
                             break;
 
                         } catch (Exception e) {
                             System.out.println("Phải nhập số hợp lệ!");
                         }
+
                     }
 
                     // ================= Cập nhật Status =================
@@ -136,6 +138,8 @@ public class TableMenu {
                                 break;
                         }
                         System.out.println("Trạng thái sẽ thay đổi thành: " + newStatus);
+                    }else{
+                        newStatus = oldTable.getStatus();
                     }
 
                     // Gọi update (chỉ update capacity và status, KHÔNG update table_number)

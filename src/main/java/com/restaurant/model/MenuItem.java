@@ -51,7 +51,7 @@ public class MenuItem {
 
     @Override
     public String toString() {
-        return String.format("%-3d | %-20s | %10.0f VND | %-10s | %-12s\n",
+        return String.format("%-3d | %-20s | %7.0f VND | %-12s | %-12s\n",
                 id, name, price, category, status);
     }
 }
