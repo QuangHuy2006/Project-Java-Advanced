@@ -34,9 +34,8 @@ public class DatabaseBackUp {
 
     public static void main(String[] args) {
         DatabaseBackUp dbConnection = DatabaseBackUp.getInstance();
-        Connection conn = getConnection();
 
-        if (conn != null) {
+        if (dbConnection != null) {
             System.out.println("Connection test successful");
         }
 

@@ -101,7 +101,7 @@ public class UserImpl implements UserDAO {
 
     @Override
     public boolean isUsernameExists(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT * FROM users WHERE username = ? AND role <> 'ADMIN'";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -118,7 +118,7 @@ public class UserImpl implements UserDAO {
 
     @Override
     public User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE id = ? AND role <> 'ADMIN'";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -142,7 +142,7 @@ public class UserImpl implements UserDAO {
 
     @Override
     public User getUserByUsername(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT * FROM users WHERE username = ? AND role <> 'ADMIN'";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -167,7 +167,7 @@ public class UserImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET role = ? ,status = ? WHERE id = ?";
+        String sql = "UPDATE users SET role = ? ,status = ? WHERE id = ? AND role <> 'ADMIN'";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -184,7 +184,7 @@ public class UserImpl implements UserDAO {
 
     @Override
     public boolean disableUser(int userId) {
-        String sql = "UPDATE users SET status = 'INACTIVE' WHERE id = ?";
+        String sql = "UPDATE users SET status = 'INACTIVE' WHERE id = ? AND role <> 'ADMIN'";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -200,7 +200,7 @@ public class UserImpl implements UserDAO {
     @Override
     public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, username, role, status, created_at FROM users ORDER BY id";
+        String sql = "SELECT id, username, role, status, created_at FROM users WHERE role <> 'ADMIN' ORDER BY id";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);

@@ -14,20 +14,17 @@ public class OrderImpl implements OrderDAO {
 
     @Override
     public boolean createOrder(Order order) throws SQLException {
-        String sql = "INSERT INTO orders (table_id, user_id, total_amount, status) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO orders(user_id,table_id, total_amount, status) values(?,?,?,?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setInt(1, order.getTableId());
-            stmt.setInt(2, order.getUserId());
-            stmt.setDouble(3, order.getTotalAmount());
-            stmt.setString(4, order.getStatus().name());
-
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement smtm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            smtm.setInt(1, order.getUserId());
+            smtm.setInt(2, order.getTableId());
+            smtm.setDouble(3, order.getTotalAmount());
+            smtm.setString(4, order.getStatus().name());
+            int affectedRow = smtm.executeUpdate();
+            if (affectedRow > 0) {
+                ResultSet rs = smtm.getGeneratedKeys();
                 if (rs.next()) {
                     order.setId(rs.getInt(1));
                 }
@@ -35,6 +32,7 @@ public class OrderImpl implements OrderDAO {
             }
             return false;
         }
+
     }
 
     @Override

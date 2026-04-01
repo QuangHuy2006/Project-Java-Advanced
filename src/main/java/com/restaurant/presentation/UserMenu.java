@@ -71,8 +71,8 @@ public class UserMenu {
             System.out.println("ID  | Ten dang nhap      | Vai tro     | Trang thai");
             System.out.println("----|--------------------|-------------|------------");
             for (User u : users) {
-                System.out.printf("%-3d | %-18s | %-11s | %s\n",
-                        u.getId(), u.getUsername(), u.getRole(), u.getStatus());
+                    System.out.printf("%-3d | %-18s | %-11s | %s\n",
+                            u.getId(), u.getUsername(), u.getRole(), u.getStatus());
             }
         }
 
@@ -147,25 +147,21 @@ public class UserMenu {
         }
 
         System.out.println("Chon vai tro:");
-        System.out.println("1. ADMIN");
-        System.out.println("2. MANAGER");
-        System.out.println("3. CHEF");
-        System.out.println("4. CUSTOMER");
+        System.out.println("1. MANAGER");
+        System.out.println("2. CHEF");
+        System.out.println("3. CUSTOMER");
         System.out.print("Nhap lua chon: ");
         String roleChoice = sc.nextLine();
 
         String role;
         switch (roleChoice) {
             case "1":
-                role = "ADMIN";
-                break;
-            case "2":
                 role = "MANAGER";
                 break;
-            case "3":
+            case "2":
                 role = "CHEF";
                 break;
-            case "4":
+            case "3":
                 role = "CUSTOMER";
                 break;
             default:
@@ -210,25 +206,21 @@ public class UserMenu {
             System.out.printf("Vai tro hien tai: %s\n", user.getRole());
 
             System.out.println("\nChon vai tro moi:");
-            System.out.println("1. ADMIN");
-            System.out.println("2. MANAGER");
-            System.out.println("3. CHEF");
-            System.out.println("4. CUSTOMER");
+            System.out.println("1. MANAGER");
+            System.out.println("2. CHEF");
+            System.out.println("3. CUSTOMER");
             System.out.print("Nhap lua chon: ");
             String roleChoice = sc.nextLine();
 
             String newRole;
             switch (roleChoice) {
                 case "1":
-                    newRole = "ADMIN";
-                    break;
-                case "2":
                     newRole = "MANAGER";
                     break;
-                case "3":
+                case "2":
                     newRole = "CHEF";
                     break;
-                case "4":
+                case "3":
                     newRole = "CUSTOMER";
                     break;
                 default:
@@ -241,6 +233,7 @@ public class UserMenu {
                 System.out.println("Cap nhat vai tro thanh cong!");
             } else {
                 System.out.println("Cap nhat that bai!");
+                System.out.println("Khong the cap nhat admin!");
             }
         } catch (NumberFormatException e) {
             System.out.println("ID phai la so!");
@@ -280,6 +273,7 @@ public class UserMenu {
                     System.out.println("Cap nhat trang thai thanh cong!");
                 } else {
                     System.out.println("Cap nhat that bai!");
+                    System.out.println("Khong the cap nhat admin");
                 }
             } else {
                 System.out.println("Huy thao tac!");
